@@ -36,6 +36,16 @@ public class AttrGroupController {
     /**
      *
      */
+    @GetMapping("withattrs/{catId}")
+    @ApiOperation(" 查询分类下的组及规格参数")
+    public ResponseVo<List<AttrGroupEntity>> queryAttrGroupByCatId(@PathVariable("catId") Long catId){
+        List<AttrGroupEntity> attrGroupEntities = this.attrGroupService.queryAttrGroupByCatId(catId);
+        return ResponseVo.ok(attrGroupEntities);
+    }
+
+    /**
+     *
+     */
     @GetMapping("category/{cid}")
     @ApiOperation(" 查询三级分类的分组")
     public ResponseVo<List<AttrGroupEntity>> queryAttrGroupByCid(@PathVariable("cid") Long cid){
