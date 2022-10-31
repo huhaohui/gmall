@@ -27,10 +27,10 @@ import java.util.Map;
 @RequestMapping("pms/oss")
 public class OssController {
 
-    String accessId = "LTAI5tM6zGYSk2mCQvQUH5A6"; // 请填写您的AccessKeyId。
-    String accessKey = "7W9fOvhqiKKlxWOVuqPOjCLo4qVPQi"; // 请填写您的AccessKeySecret。
-    String endpoint = "oss-cn-hangzhou.aliyuncs.com"; // 请填写您的 endpoint。
-    String bucket = "yiki-gmall"; // 请填写您的 bucketname 。
+    String accessId = "LTAI5tN8b1EYMVuozzHwkNsf"; // 请填写您的AccessKeyId。
+    String accessKey = "uVtHEYfVrAjHWUdj3PUm9Pcb7dhMuB"; // 请填写您的AccessKeySecret。
+    String endpoint = "oss-cn-shanghai.aliyuncs.com"; // 请填写您的 endpoint。
+    String bucket = "hu-guli"; // 请填写您的 bucketname 。
     String host = "https://" + bucket + "." + endpoint; // host的格式为 bucketname.endpoint
     // callbackUrl为 上传回调服务器的URL，请将下面的IP和Port配置为您自己的真实信息。
     //String callbackUrl = "http://88.88.88.88:8888";
