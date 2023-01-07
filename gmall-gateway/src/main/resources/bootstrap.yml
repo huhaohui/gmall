@@ -5,6 +5,6 @@ spring:
     nacos:
       config:
         server-addr: 192.168.0.101:8848 # 配置中心地址
-        namespace: c6e6874f-3223-4643-b052-1c9c6a53a085 # 命名空间 ID
+        namespace: 28f92e06-8cbc-4b9e-a29a-f7fe87619217 # 命名空间 ID
         group: dev # 配置文件分组
         file-extension: yml # 配置文件扩展名, 默认是 properties

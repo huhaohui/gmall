@@ -73,7 +73,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         }
 
         String key = paramVo.getKey();
-        if (StringUtils.isNotEmpty(key)) {
+        if (StringUtils.isNotBlank(key)) {
             spuEntityQueryWrapper.and(a -> a.eq("id", key).or().like("name", key));
 //            spuEntityQueryWrapper.eq("id", key).or().like("name", key);
         }
@@ -97,6 +97,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         saveBaseAttr(spu, spuId);
         // 2. 保存 sku 相关信息
         saveSkuInfo(spu, spuId);
+
+        //int i = 1/0;
 
     }
 
