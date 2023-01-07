@@ -2,8 +2,13 @@ package com.atguigu.gmall.pms.api;
 
 import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.common.bean.ResponseVo;
+import com.atguigu.gmall.pms.entity.BrandEntity;
+import com.atguigu.gmall.pms.entity.CategoryEntity;
+import com.atguigu.gmall.pms.entity.SkuEntity;
 import com.atguigu.gmall.pms.entity.SpuEntity;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,5 +25,17 @@ public interface GmallPmsApi {
     @PostMapping("pms/spu/json")
     @ApiOperation("分页查询")
     ResponseVo<List<SpuEntity>> querySpuByPageJson(@RequestBody PageParamVo paramVo);
+
+    @GetMapping("pms/sku/spu/{spuId}")
+    @ApiOperation("查询spu的所有sku信息")
+    ResponseVo<List<SkuEntity>> querySpuById(@PathVariable("spuId") Long spuId);
+
+    @GetMapping("pms/brand/{id}")
+    @ApiOperation("详情查询")
+    ResponseVo<BrandEntity> queryBrandById(@PathVariable("id") Long id);
+
+    @GetMapping("pms/category/{id}")
+    @ApiOperation("详情查询")
+    ResponseVo<CategoryEntity> queryCategoryById(@PathVariable("id") Long id);
 
 }
