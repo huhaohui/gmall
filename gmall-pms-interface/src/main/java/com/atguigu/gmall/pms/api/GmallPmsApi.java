@@ -4,13 +4,16 @@ import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.common.bean.ResponseVo;
 import com.atguigu.gmall.pms.entity.BrandEntity;
 import com.atguigu.gmall.pms.entity.CategoryEntity;
+import com.atguigu.gmall.pms.entity.SkuAttrValueEntity;
 import com.atguigu.gmall.pms.entity.SkuEntity;
+import com.atguigu.gmall.pms.entity.SpuAttrValueEntity;
 import com.atguigu.gmall.pms.entity.SpuEntity;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -37,5 +40,19 @@ public interface GmallPmsApi {
     @GetMapping("pms/category/{id}")
     @ApiOperation("详情查询")
     ResponseVo<CategoryEntity> queryCategoryById(@PathVariable("id") Long id);
+
+    @GetMapping("pms/skuattrvalue/search/attr/value/{cid}")
+    @ApiOperation("查询销售类型的检索属性和值")
+    ResponseVo<List<SkuAttrValueEntity>> querySearchAttrValueByCidAndSkuId(
+            @PathVariable("cid")Long cid,
+            @RequestParam("skuId")Long skuId
+    );
+
+    @GetMapping("pms/spuattrvalue/search/attr/value/{cid}")
+    @ApiOperation("查询基本类型的检索属性和值")
+    ResponseVo<List<SpuAttrValueEntity>> querySearchAttrValueByCidAndSpuId(
+            @PathVariable("cid")Long cid,
+            @RequestParam("spuId")Long spuId
+    );
 
 }
