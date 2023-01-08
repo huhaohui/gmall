@@ -57,8 +57,8 @@ public class GmallSearchApplicationTests {
 
         do {
             // 分批查询spu
-            ResponseVo<List<SpuEntity>> listResponseVo = this.pmsClient.querySpuByPageJson(new PageParamVo(pageNum, pageSize, null));
-            List<SpuEntity> spuEntities = listResponseVo.getData();
+            ResponseVo<List<SpuEntity>> spuResponseVo = this.pmsClient.querySpuByPageJson(new PageParamVo(pageNum, pageSize, null));
+            List<SpuEntity> spuEntities = spuResponseVo.getData();
             if (CollectionUtils.isEmpty(spuEntities)) {
                 return;
             }
@@ -133,6 +133,7 @@ public class GmallSearchApplicationTests {
                         goods.setSearchAttrs(searchAttrs);
                         return goods;
                     }).collect(Collectors.toList());
+                    this.restTemplate.save(goodsList);
                 }
 
             });

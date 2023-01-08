@@ -32,8 +32,8 @@ public class Goods {
     private Double price; // 价格
 
     // 排序及过滤
-    @Field(type = FieldType.Integer)
-    private Long sales; // 销量
+    @Field(type = FieldType.Long)
+    private Long sales = 0L; // 销量
     @Field(type = FieldType.Date, format = DateFormat.date)
     private Date createTime; // 新品
     @Field(type = FieldType.Boolean)
