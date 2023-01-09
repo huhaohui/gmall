@@ -1,6 +1,5 @@
 package com.atguigu.gmall.search;
 
-import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.atguigu.gmall.common.bean.PageParamVo;
 import com.atguigu.gmall.common.bean.ResponseVo;
 import com.atguigu.gmall.pms.entity.BrandEntity;
@@ -20,34 +19,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.IndexOperations;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @Description:
- * @Author: xionghu514
- * @Date: 2023/1/7 21:11
- * @Email: 1796235969@qq.com
- */
-
 @SpringBootTest
-public class GmallSearchApplicationTests {
+class GmallSearchApplicationTests {
 
     @Autowired
     private ElasticsearchRestTemplate restTemplate;
 
     @Autowired
-    private GmallWmsClient wmsClient;
+    private GmallPmsClient pmsClient;
 
     @Autowired
-    private GmallPmsClient pmsClient;
+    private GmallWmsClient wmsClient;
 
     @Test
     void contextLoads() {
+
         IndexOperations indexOps = this.restTemplate.indexOps(Goods.class);
-        if (!indexOps.exists()) {
+        if (!indexOps.exists()){
             indexOps.create();
             indexOps.putMapping(indexOps.createMapping());
         }
@@ -59,21 +53,26 @@ public class GmallSearchApplicationTests {
             // 分批查询spu
             ResponseVo<List<SpuEntity>> spuResponseVo = this.pmsClient.querySpuByPageJson(new PageParamVo(pageNum, pageSize, null));
             List<SpuEntity> spuEntities = spuResponseVo.getData();
-            if (CollectionUtils.isEmpty(spuEntities)) {
+            if (CollectionUtils.isEmpty(spuEntities)){
                 return;
             }
-            // 遍历当前页的spu，查询spu下的sku 转换成goods集合 导入到es索引库
+
+            // 遍历当前页的spu，查询spu下的sku 抓化成goods集合 导入到es索引库
             spuEntities.forEach(spuEntity -> {
                 ResponseVo<List<SkuEntity>> skuResponseVo = this.pmsClient.querySpuById(spuEntity.getId());
                 List<SkuEntity> skuEntities = skuResponseVo.getData();
-                // 判断当前spu下的sku是否为空
-                if (!CollectionUtils.isEmpty(skuEntities)) {
+
+                // 判断当前spu下的sku是否为空，如果不为空则转化成goods集合
+                if (!CollectionUtils.isEmpty(skuEntities)){
+
                     // 查询品牌
                     ResponseVo<BrandEntity> brandEntityResponseVo = this.pmsClient.queryBrandById(spuEntity.getBrandId());
                     BrandEntity brandEntity = brandEntityResponseVo.getData();
-                    // 查询分类
+
+                    // 查询表分类
                     ResponseVo<CategoryEntity> categoryEntityResponseVo = this.pmsClient.queryCategoryById(spuEntity.getCategoryId());
                     CategoryEntity categoryEntity = categoryEntityResponseVo.getData();
+
                     // 查询基本类型的检索属性和值
                     ResponseVo<List<SpuAttrValueEntity>> baseAttrResponseVo = this.pmsClient.querySearchAttrValueByCidAndSpuId(spuEntity.getCategoryId(), spuEntity.getId());
                     List<SpuAttrValueEntity> spuAttrValueEntities = baseAttrResponseVo.getData();
@@ -82,47 +81,43 @@ public class GmallSearchApplicationTests {
                         Goods goods = new Goods();
 
                         // sku相关信息
-                        goods.setSkuId(skuEntity.getId());
                         goods.setTitle(skuEntity.getTitle());
                         goods.setSubtitle(skuEntity.getSubtitle());
                         goods.setDefaultImage(skuEntity.getDefaultImage());
                         goods.setPrice(skuEntity.getPrice().doubleValue());
+                        goods.setSkuId(skuEntity.getId());
+
                         // 设置创建时间
                         goods.setCreateTime(spuEntity.getCreateTime());
+
                         // 销量及是否有货
                         ResponseVo<List<WareSkuEntity>> wareResponseVo = this.wmsClient.queryWareSkuBySkuId(skuEntity.getId());
                         List<WareSkuEntity> wareSkuEntities = wareResponseVo.getData();
-                        if (!CollectionUtils.isEmpty(wareSkuEntities)) {
+                        if (!CollectionUtils.isEmpty(wareSkuEntities)){
                             goods.setStore(wareSkuEntities.stream().anyMatch(wareSkuEntity -> wareSkuEntity.getStock() - wareSkuEntity.getStockLocked() > 0));
                             goods.setSales(wareSkuEntities.stream().map(WareSkuEntity::getSales).reduce((a, b) -> a + b).get());
                         }
+
                         // 品牌
                         if (brandEntity != null) {
                             goods.setBrandId(brandEntity.getId());
                             goods.setBrandName(brandEntity.getName());
                             goods.setLogo(brandEntity.getLogo());
                         }
+
                         // 分类
                         if (categoryEntity != null) {
                             goods.setCategoryId(categoryEntity.getId());
                             goods.setCategoryName(categoryEntity.getName());
                         }
-                        // 查询检索类型的规格参数
+
+                        // 检索类型的规格参数
                         ResponseVo<List<SkuAttrValueEntity>> saleAttrResponseVo = this.pmsClient.querySearchAttrValueByCidAndSkuId(skuEntity.getCategoryId(), skuEntity.getId());
                         List<SkuAttrValueEntity> skuAttrValueEntities = saleAttrResponseVo.getData();
 
                         List<SearchAttrValueVo> searchAttrs = new ArrayList<>();
-                        // 把基本类型的检索属性和值 转化成 vo对象
-                        if (!CollectionUtils.isEmpty(spuAttrValueEntities)) {
-                            List<SearchAttrValueVo> searchAttrValueVos = spuAttrValueEntities.stream().map(spuAttrValueEntity -> {
-                                SearchAttrValueVo attrValueVo = new SearchAttrValueVo();
-                                BeanUtils.copyProperties(spuAttrValueEntity, attrValueVo);
-                                return attrValueVo;
-                            }).collect(Collectors.toList());
-                            searchAttrs.addAll(searchAttrValueVos);
-                        }
                         // 把销售类型的检索属性和值 转化成 vo对象
-                        if (!CollectionUtils.isEmpty(skuAttrValueEntities)) {
+                        if (!CollectionUtils.isEmpty(skuAttrValueEntities)){
                             List<SearchAttrValueVo> searchAttrValueVos = skuAttrValueEntities.stream().map(skuAttrValueEntity -> {
                                 SearchAttrValueVo attrValueVo = new SearchAttrValueVo();
                                 BeanUtils.copyProperties(skuAttrValueEntity, attrValueVo);
@@ -130,17 +125,31 @@ public class GmallSearchApplicationTests {
                             }).collect(Collectors.toList());
                             searchAttrs.addAll(searchAttrValueVos);
                         }
+
+                        // 把基本类型的检索属性和值 转化成 vo对象
+                        if (!CollectionUtils.isEmpty(spuAttrValueEntities)){
+                            List<SearchAttrValueVo> searchAttrValueVos = spuAttrValueEntities.stream().map(spuAttrValueEntity -> {
+                                SearchAttrValueVo attrValueVo = new SearchAttrValueVo();
+                                BeanUtils.copyProperties(spuAttrValueEntity, attrValueVo);
+                                return attrValueVo;
+                            }).collect(Collectors.toList());
+                            searchAttrs.addAll(searchAttrValueVos);
+                        }
+
                         goods.setSearchAttrs(searchAttrs);
+
                         return goods;
                     }).collect(Collectors.toList());
+
                     this.restTemplate.save(goodsList);
                 }
-
             });
+
             pageSize = spuEntities.size();
             pageNum++;
         } while (pageSize == 100);
-    }
 
+
+    }
 
 }

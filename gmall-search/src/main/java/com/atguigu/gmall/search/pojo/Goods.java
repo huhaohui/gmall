@@ -10,50 +10,46 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @Description:
- * @Author: xionghu514
- * @Date: 2022/11/8 13:16
- * @Email: 1796235969@qq.com
- */
+@Document(indexName = "goods", shards = 3, replicas = 2)
 @Data
-@Document(indexName = "goods", shards = 3, replicas = 2) // indexName 指定索引库, shards 分片数量, replicas 副本数量
 public class Goods {
-    // 商品列表所需要的字段
+
+    // sku相关字段
     @Id
     private Long skuId;
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    private String title; // 标题
+    private String title;
     @Field(type = FieldType.Keyword, index = false)
-    private String subtitle; // 副标题
+    private String subtitle;
     @Field(type = FieldType.Keyword, index = false)
-    private String defaultImage; // 默认图片
+    private String defaultImage;
     @Field(type = FieldType.Double)
-    private Double price; // 价格
+    private Double price;
 
-    // 排序及过滤
+    // 排序所需的字段：
     @Field(type = FieldType.Long)
-    private Long sales = 0L; // 销量
+    private Long sales = 0L; // 销量排序所需字段
     @Field(type = FieldType.Date, format = DateFormat.date)
-    private Date createTime; // 新品
+    private Date createTime; // 新品排序所需字段
     @Field(type = FieldType.Boolean)
-    private Boolean store = false; // 是否有货
+    private Boolean store = false; // 是否有货的过滤字段
 
-    // 过滤条件
+    /// 过滤所需字段：
+    // 品牌所需的字段
     @Field(type = FieldType.Long)
-    private Long brandId; // 品牌 id
+    private Long brandId;
     @Field(type = FieldType.Keyword)
-    private String brandName; // 品牌名称
+    private String brandName;
     @Field(type = FieldType.Keyword)
-    private String logo; // 品牌 logo
+    private String logo;
 
-    // 分类
+    // 分类所需的字段：
     @Field(type = FieldType.Long)
-    private Long categoryId; // 分类 id
+    private Long categoryId;
     @Field(type = FieldType.Keyword)
-    private String categoryName; // 分类名称
+    private String categoryName;
 
-    // 规格参数
-    @Field(type = FieldType.Nested) // 嵌套类型
+    // 规格参数过滤
+    @Field(type = FieldType.Nested)
     private List<SearchAttrValueVo> searchAttrs;
 }
