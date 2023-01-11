@@ -25,13 +25,17 @@ import java.util.List;
  */
 public interface GmallPmsApi {
 
+    @GetMapping("pms/spu/{id}")
+    @ApiOperation("详情查询")
+    ResponseVo<SpuEntity> querySpuById(@PathVariable("id") Long id);
+
     @PostMapping("pms/spu/json")
     @ApiOperation("分页查询")
     ResponseVo<List<SpuEntity>> querySpuByPageJson(@RequestBody PageParamVo paramVo);
 
     @GetMapping("pms/sku/spu/{spuId}")
     @ApiOperation("查询spu的所有sku信息")
-    ResponseVo<List<SkuEntity>> querySpuById(@PathVariable("spuId") Long spuId);
+    ResponseVo<List<SkuEntity>> querySkusBySpuId(@PathVariable("spuId") Long spuId);
 
     @GetMapping("pms/brand/{id}")
     @ApiOperation("详情查询")

@@ -59,7 +59,7 @@ class GmallSearchApplicationTests {
 
             // 遍历当前页的spu，查询spu下的sku 抓化成goods集合 导入到es索引库
             spuEntities.forEach(spuEntity -> {
-                ResponseVo<List<SkuEntity>> skuResponseVo = this.pmsClient.querySpuById(spuEntity.getId());
+                ResponseVo<List<SkuEntity>> skuResponseVo = this.pmsClient.querySkusBySpuId(spuEntity.getId());
                 List<SkuEntity> skuEntities = skuResponseVo.getData();
 
                 // 判断当前spu下的sku是否为空，如果不为空则转化成goods集合
