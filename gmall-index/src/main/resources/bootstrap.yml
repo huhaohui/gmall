@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: index-service # 服务名称
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.0.101:8848 # nacos 配置中心地址信息
+        namespace: 1b1c50f3-0307-43e7-ba41-efaf07301272 # 命名空间 ID
+        group: dev # 配置文件分组
+        file-extension: yml # 配置文件扩展名, 默认是 properties

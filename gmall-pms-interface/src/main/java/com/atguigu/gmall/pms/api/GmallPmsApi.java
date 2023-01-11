@@ -45,6 +45,14 @@ public interface GmallPmsApi {
     @ApiOperation("详情查询")
     ResponseVo<CategoryEntity> queryCategoryById(@PathVariable("id") Long id);
 
+    @GetMapping("pms/category/parent/{parentId}")
+    @ApiOperation("根据父分类 id 查询子分类")
+    ResponseVo<List<CategoryEntity>> queryCategoriesByPid(@PathVariable("parentId") Long pid);
+
+    @GetMapping("pms/category/level23/{pid}")
+    @ApiOperation("查询二三级分类")
+    ResponseVo<List<CategoryEntity>> queryLevel23CategoriesByPid(@PathVariable("pid")Long pid);
+
     @GetMapping("pms/skuattrvalue/search/attr/value/{cid}")
     @ApiOperation("查询销售类型的检索属性和值")
     ResponseVo<List<SkuAttrValueEntity>> querySearchAttrValueByCidAndSkuId(

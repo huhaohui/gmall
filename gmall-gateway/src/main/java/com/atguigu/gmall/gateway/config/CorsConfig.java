@@ -22,6 +22,8 @@ public class CorsConfig {
         // 允许跨域访问的域名. * 代表所有域名. 不推荐 1. 存在安全问题 2. 不能携带 cookie
         configuration.addAllowedOrigin("http://manager.gmall.com");
         configuration.addAllowedOrigin("http://localhost:1000");
+        configuration.addAllowedOrigin("http://www.gmall.com");
+        configuration.addAllowedOrigin("http://localhost:18087");
         configuration.addAllowedOrigin("http://192.168.0.118");
         configuration.addAllowedOrigin("http://127.0.0.1:1000");
         // 允许那些请求方式跨域访问 * 允许所有

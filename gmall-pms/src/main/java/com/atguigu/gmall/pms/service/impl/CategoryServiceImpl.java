@@ -8,6 +8,7 @@ import com.atguigu.gmall.pms.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
@@ -52,6 +56,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, CategoryEnt
          *      select * from pms_category where parent_id = pid;
          */
         return list(wrapper);
+    }
+
+    @Override
+    public List<CategoryEntity> queryLevel23CategoriesByPid(Long pid) {
+        return this.categoryMapper.queryCategoriesByPid(pid);
     }
 
 }

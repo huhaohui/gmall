@@ -32,6 +32,13 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @GetMapping("level23/{pid}")
+    @ApiOperation("查询二三级分类")
+    public ResponseVo<List<CategoryEntity>> queryLevel23CategoriesByPid(@PathVariable("pid")Long pid){
+        List<CategoryEntity> categoryEntities = this.categoryService.queryLevel23CategoriesByPid(pid);
+        return ResponseVo.ok(categoryEntities);
+    }
+
     /**
      * http://api.gmall.com/pms/category/parent/-1
      * 　　　　　　　　　　　　/pms/category/parent/{parentId}
