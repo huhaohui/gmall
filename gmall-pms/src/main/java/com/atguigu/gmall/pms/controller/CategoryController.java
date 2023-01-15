@@ -32,6 +32,13 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @GetMapping("lvl123/{cid3}")
+    @ApiOperation("根据三级分类id查询一二三级分类")
+    public ResponseVo<List<CategoryEntity>> queryLvl123CategoriesByCid3(@PathVariable("cid3")Long cid3){
+        List<CategoryEntity> categoryEntities = this.categoryService.queryLvl123CategoriesByCid3(cid3);
+        return ResponseVo.ok(categoryEntities);
+    }
+
     @GetMapping("level23/{pid}")
     @ApiOperation("查询二三级分类")
     public ResponseVo<List<CategoryEntity>> queryLevel23CategoriesByPid(@PathVariable("pid")Long pid){
