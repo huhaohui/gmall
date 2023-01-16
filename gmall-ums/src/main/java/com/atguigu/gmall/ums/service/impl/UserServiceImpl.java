@@ -50,7 +50,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
 
     @Override
     public void register(UserEntity userEntity, String code) {
-        // TODO：1.校验验证  code 和redis中的code比较
+        // 1.校验验证  code 和redis中的code比较
 
         // 2.生成盐
         String salt = StringUtils.substring(UUID.randomUUID().toString(), 0, 6);
@@ -67,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         userEntity.setCreateTime(new Date());
         this.save(userEntity);
 
-        // TODO：删除短信验证码
+        // 删除短信验证码
     }
 
     @Override
