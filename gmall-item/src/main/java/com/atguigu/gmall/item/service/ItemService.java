@@ -20,7 +20,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +51,9 @@ public class ItemService {
 
     @Autowired
     private ExecutorService executorService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     public ItemVo loadData(Long skuId) {
         ItemVo itemVo = new ItemVo();
@@ -145,7 +152,26 @@ public class ItemService {
 
         CompletableFuture.allOf(categoryFuture, brandFuture, spuFuture, imagesFuture, salesFuture, wareSkuFuture, saleAttrsFuture, saleAttrFuture, mappingFuture, descFuture, groupFuture).join();
 
+        // 异步化改造页面静态化
+        executorService.execute(() -> {
+            this.generateHtml(itemVo);
+        });
+
         return itemVo;
+    }
+
+    private void generateHtml(ItemVo itemVo){
+
+        try (PrintWriter printWriter = new PrintWriter("E:\\learn\\html\\" + itemVo.getSkuId() + ".html")) {
+            // 初始化一个上下文对象
+            Context context = new Context();
+            // 给模板传递动态数据
+            context.setVariable("itemVo", itemVo);
+            // 页面静态化方法：1-模板名称  2-上下文对象 3-文件流
+            this.templateEngine.process("item", context, printWriter);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
