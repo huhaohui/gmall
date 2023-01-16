@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,6 +32,29 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("query")
+    @ApiOperation("查询用户")
+    public ResponseVo<UserEntity> queryUser(
+            @RequestParam("loginName")String loginName,
+            @RequestParam("password")String password){
+        UserEntity userEntity = this.userService.queryUser(loginName, password);
+        return ResponseVo.ok(userEntity);
+    }
+
+    @PostMapping("register")
+    @ApiOperation("用户注册")
+    public ResponseVo register(UserEntity userEntity, @RequestParam("code")String code){
+        this.userService.register(userEntity, code);
+        return ResponseVo.ok();
+    }
+
+    @GetMapping("check/{data}/{type}")
+    @ApiOperation("校验数据是否可用")
+    public ResponseVo<Boolean> checkData(@PathVariable("data")String data, @PathVariable("type")Integer type){
+        Boolean flag = this.userService.checkData(data, type);
+        return ResponseVo.ok(flag);
+    }
 
     /**
      * 列表
