@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public interface GmallUmsApi {
 
-    @GetMapping("query")
+    @GetMapping("ums/user/query")
     @ApiOperation("查询用户")
     ResponseVo<UserEntity> queryUser(
             @RequestParam("loginName")String loginName,
             @RequestParam("password")String password);
 
-    @PostMapping("register")
+    @PostMapping("ums/user/register")
     @ApiOperation("用户注册")
     ResponseVo register(UserEntity userEntity, @RequestParam("code")String code);
 
-    @GetMapping("check/{data}/{type}")
+    @GetMapping("ums/user/check/{data}/{type}")
     @ApiOperation("校验数据是否可用")
     ResponseVo<Boolean> checkData(@PathVariable("data")String data, @PathVariable("type")Integer type);
 
