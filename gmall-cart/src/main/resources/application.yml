@@ -39,6 +39,17 @@ spring:
       shutdown:
         await-termination: true
         await-termination-period: 60
+  rabbitmq:
+    host: 192.168.0.101
+    port: 5672
+    virtual-host: /hu
+    username: hu
+    password: 123456
+    listener:
+      simple:
+        prefetch: 1
+        concurrency: 6
+        acknowledge-mode: manual
 feign: # feign
   sentinel:
     enabled: true # 开启 feign 的 sentinel 功能

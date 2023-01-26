@@ -103,6 +103,8 @@ public class CartService {
 
             // 保存到数据库 redis mysql
             this.asyncService.insertCart(cart);
+            // 添加实时价格缓存
+            this.redisTemplate.opsForValue().set(PRICE_PREFIX + skuId, skuEntity.getPrice().toString());
         }
         hashOps.put(skuId, JSON.toJSONString(cart));
     }
@@ -143,6 +145,8 @@ public class CartService {
         if (!CollectionUtils.isEmpty(cartJsons)){
             unloginCarts = cartJsons.stream().map(cartJson -> {
                 Cart cart = JSON.parseObject(cartJson.toString(), Cart.class);
+                // 查询购物车时，查询实时价格缓存
+                cart.setCurrentPrice(new BigDecimal(this.redisTemplate.opsForValue().get(PRICE_PREFIX + cart.getSkuId())));
                 return cart;
             }).collect(Collectors.toList());
         }
@@ -187,6 +191,7 @@ public class CartService {
         if (!CollectionUtils.isEmpty(loginCartJsons)){
             return loginCartJsons.stream().map(cartJson -> {
                 Cart cart = JSON.parseObject(cartJson.toString(), Cart.class);
+                cart.setCurrentPrice(new BigDecimal(this.redisTemplate.opsForValue().get(PRICE_PREFIX + cart.getSkuId())));
                 return cart;
             }).collect(Collectors.toList());
         }
