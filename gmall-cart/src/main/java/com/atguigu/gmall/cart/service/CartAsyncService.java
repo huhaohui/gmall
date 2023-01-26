@@ -29,4 +29,14 @@ public class CartAsyncService {
         this.cartMapper.insert(cart);
     }
 
+    @Async
+    public void deleteByUserId(String userId) {
+        this.cartMapper.delete(new UpdateWrapper<Cart>().eq("user_id", userId));
+    }
+
+    @Async
+    public void deleteByUserIdAndSkuId(String userId, Long skuId) {
+        this.cartMapper.delete(new UpdateWrapper<Cart>().eq("user_id", userId).eq("sku_id", skuId));
+    }
+
 }
