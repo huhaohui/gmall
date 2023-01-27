@@ -25,7 +25,7 @@ public class CartAsyncService {
     }
 
     @Async
-    public void insertCart(Cart cart){
+    public void insertCart(String userId,Cart cart){
         this.cartMapper.insert(cart);
     }
 

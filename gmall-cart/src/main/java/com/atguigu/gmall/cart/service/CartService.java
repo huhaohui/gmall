@@ -102,7 +102,7 @@ public class CartService {
             cart.setSales(JSON.toJSONString(itemSaleVos));
 
             // 保存到数据库 redis mysql
-            this.asyncService.insertCart(cart);
+            this.asyncService.insertCart(userId,cart);
             // 添加实时价格缓存
             this.redisTemplate.opsForValue().set(PRICE_PREFIX + skuId, skuEntity.getPrice().toString());
         }
@@ -176,7 +176,7 @@ public class CartService {
                     // 如果不包含则新增记录
                     cart.setId(null);
                     cart.setUserId(userId.toString());
-                    this.asyncService.insertCart(cart);
+                    this.asyncService.insertCart(userId.toString(),cart);
                 }
                 loginHashOps.put(skuId, JSON.toJSONString(cart));
             });
