@@ -241,4 +241,16 @@ public class CartService {
         hashOps.delete(skuId.toString());
         this.asyncService.deleteByUserIdAndSkuId(userId, skuId);
     }
+
+    public List<Cart> queryCheckedCartsByUserId(Long userId) {
+        BoundHashOperations<String, Object, Object> hashOps = this.redisTemplate.boundHashOps(KEY_PREFIX + userId);
+        List<Object> cartJsons = hashOps.values();
+
+        if (!CollectionUtils.isEmpty(cartJsons)){
+            return cartJsons.stream()
+                    .map(cartJson -> JSON.parseObject(cartJson.toString(), Cart.class))
+                    .filter(Cart::getCheck).collect(Collectors.toList());
+        }
+        throw new CartException("您的购物车为空！");
+    }
 }
