@@ -25,6 +25,12 @@ spring:
   redis: # Redis
     host: 192.168.0.101
     port: 6379
+  rabbitmq:
+    host: 192.168.0.101
+    port: 5672
+    virtual-host: /hu
+    username: hu
+    password: 123456
 feign: # feign
   sentinel:
     enabled: true # 开启 feign 的 sentinel 功能
