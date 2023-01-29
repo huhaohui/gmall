@@ -31,6 +31,11 @@ spring:
     virtual-host: /hu
     username: hu
     password: 123456
+    listener:
+      simple:
+        prefetch: 1
+        concurrency: 6
+        acknowledge-mode: manual
 feign: # feign
   sentinel:
     enabled: true # 开启 feign 的 sentinel 功能

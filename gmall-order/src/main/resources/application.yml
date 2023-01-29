@@ -1,5 +1,8 @@
 server:
   port: 18092 # 服务端口号
+  error:
+    include-exception: true
+    include-message: always
 spring:
   cloud:
     nacos:
@@ -28,6 +31,8 @@ spring:
     virtual-host: /hu
     username: hu
     password: 123456
+    publisher-confirm-type: correlated
+    publisher-returns: true
 feign: # feign
   sentinel:
     enabled: true # 开启 feign 的 sentinel 功能

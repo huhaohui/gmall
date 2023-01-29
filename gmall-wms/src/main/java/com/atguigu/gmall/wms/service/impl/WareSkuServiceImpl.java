@@ -16,6 +16,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuMapper, WareSkuEntity
     }
 
     @Override
+    @Transactional
     public List<SkuLockVo> checkLock(List<SkuLockVo> lockVos, String orderToken) {
 
         // 判空
