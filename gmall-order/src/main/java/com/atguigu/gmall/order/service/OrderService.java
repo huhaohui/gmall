@@ -203,6 +203,8 @@ public class OrderService {
         Long userId = userInfo.getUserId();
         try {
             this.omsClient.saveOrder(submitVo, userId);
+            // 订单创建成功，发送消息给延时队列，定时关单
+            this.rabbitTemplate.convertAndSend("ORDER_EXCHANGE", "order.ttl", orderToken);
         } catch (Exception e) {
             // 发送消息给oms标记为无效订单，给wms解锁库存
             this.rabbitTemplate.convertAndSend("ORDER_EXCHANGE", "order.failure", orderToken);

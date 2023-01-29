@@ -1,7 +1,10 @@
-package com.atguigu.gmall.order.config;
+package com.atguigu.gmall.wms.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,20 +51,20 @@ public class RabbitConfig {
      */
 
     /**
-     * 延时队列：ORDER_TTL_QUEUE
+     * 延时队列：STOCK_TTL_QUEUE
      */
     @Bean
     public Queue ttlQueue(){
-        return QueueBuilder.durable("ORDER_TTL_QUEUE").ttl(90000)
-                .deadLetterExchange("ORDER_EXCHANGE").deadLetterRoutingKey("order.dead").build();
+        return QueueBuilder.durable("STOCK_TTL_QUEUE").ttl(100000)
+                .deadLetterExchange("ORDER_EXCHANGE").deadLetterRoutingKey("stock.unlock").build();
     }
 
     /**
-     * 把延时队列绑定到业务交换机：order.ttl
+     * 把延时队列绑定到业务交换机：stock.ttl
      */
     @Bean
     public Binding ttlBinding(){
-        return new Binding("ORDER_TTL_QUEUE", Binding.DestinationType.QUEUE, "ORDER_EXCHANGE", "order.ttl", null);
+        return new Binding("STOCK_TTL_QUEUE", Binding.DestinationType.QUEUE, "ORDER_EXCHANGE", "stock.ttl", null);
     }
 
     /**
@@ -69,18 +72,10 @@ public class RabbitConfig {
      */
 
     /**
-     * 死信队列：ORDER_DEAD_QUEUE
+     * 死信队列：STOCK_UNLOCK_QUEUE
      */
-    @Bean
-    public Queue deadQueue(){
-        return QueueBuilder.durable("ORDER_DEAD_QUEUE").build();
-    }
 
     /**
-     * 把死信队列绑定到死信交换机：order.dead
+     * 把死信队列绑定到死信交换机：stock.unlock
      */
-    @Bean
-    public Binding deadBinding(){
-        return new Binding("ORDER_DEAD_QUEUE", Binding.DestinationType.QUEUE, "ORDER_EXCHANGE", "order.dead", null);
-    }
 }
